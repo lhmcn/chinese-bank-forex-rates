@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="./css/index.css">
+	<script type="text/javascript" src="./js/jquery.js"></script>
+	<title>Document</title>
+</head>
+<body>
+
+<div class="con_content1">
+<p class="tip">*仅提供查询最多三个月内的牌价交易价格*</p>
+<table  cellpadding="5" cellspacing="0" width="100%" align="center" class="exchangeTab">
+	<tr class="line-table">
+		<td height="30" colspan="7" align="left">
+			<form name="queryForm">
+				&nbsp;&nbsp;历史牌价查询 日期： <select id="selDate"
+					name="selDate" onchange="javascript:onChanageDate();">
+					<option>请选择日期</option>	</select>
+					从
+					<select id="fromTime" name="fromTime" disabled="">
+				</select>
+				到
+				<select id="toTime" name="toTime" disabled="">
+				</select>
+				<input type="submit" name="Submit" value="提交" class="inputSumbit">
+			</form>
+		</td>
+	<tr class="bgcolorTable">
+</table>
+<p class="tip">牌价非实际交易价格，仅供参考。各分行实际开办币种可能存在差异，具体请洽当地营业网点。</p>
+</div>
+ 
+
+<script type="text/JavaScript">
+
+function MM_openBrWindow(theURL,winName,features) { //v2.0
+	alert('MM_openBrWindow');
+  window.open(theURL,winName,features);
+}
+
+function onChanageDate(){
+	var Date =document.getElementById("selDate").value;
+	if(Date!=currentDate){
+     document.getElementById("fromTime").disabled = "disabled";
+     document.getElementById("toTime").disabled = "disabled";
+	}else{
+	 document.getElementById("fromTime").disabled = "";
+	 document.getElementById("toTime").disabled = "";
+	}
+}
+//获取当前时间
+function getCurrentTime () {
+	var data = new Date()
+	var year = data.getFullYear()
+	var month = repair(data.getMonth()+1)
+	var day = repair(data.getDate())
+	var hour = repair(data.getHours())
+	var minute = repair(data.getMinutes())
+	var second = repair(data.getSeconds())
+	var curTime = year+"-"+month+"-"+day+" "+hour+":"+ minute+":"+second;
+	return curTime
+}
+
+	var nowdata = new Date()
+	var nowyear = nowdata.getFullYear()
+	var nowmonth = repair(nowdata.getMonth()+1)
+	var nowday = repair(nowdata.getDate())
+	var currentDate = nowyear+ "-" + nowmonth + "-" + nowday;
+	function repair(i) {
+	if(i>=0&&i<=9){
+		return "0"+i
+	}else{
+		return i ;
+	}
+}
+function  parseISO8601(parms) {
+	var isoExp= /^\s*(\d{4})-(\d\d)-(\d\d)\s*$/
+	var date =new Date(NaN);
+	var month
+	var isoDate =isoExp.exec(parms)
+	if (isoDate) {
+		month=+isoDate[2]
+		date.setFullYear(isoDate[1],month-1,isoDate[3])
+		if(month!=date.getMonth()+1){
+			date.setTime(NaN)
+		}
+	}
+	return date
+  }
+//获取近三个月的时间段所有日期
+function getThrMonth() {
+	var end = new Date()
+	var year = end.getFullYear()
+	var month = end.getMonth()+1
+	var day = end.getDate()
+	var dateObj={}
+	if(parseInt(month)<10){
+		month = "0"+month
+	}
+	if(parseInt(day)<10){
+		day = "0"+day
+	}
+	dateObj.now =year+"-"+month+"-"+day
+	if(parseInt(month)==1){
+		dateObj.last = parseInt(year)-1+'-10-'+day
+		return dateObj
+	}
+		if(parseInt(month)==2){
+		dateObj.last = parseInt(year)-1+'-11-'+day
+		return dateObj
+	}
+		if(parseInt(month)==3){
+		dateObj.last = parseInt(year)-1+'-12-'+day
+		return dateObj
+	}
+	var preSize = new Date(year,parseInt(month)-3,0).getDate()
+	if (preSize<parseInt(day)) {
+		var resultMonth = parseInt(month)-2<10?'0'+parseInt(month)-2:parseInt(month)-2
+		dateObj.last =year+"-0"+resultMonth+"-01"
+		return dateObj
+	}
+	if (parseInt(month)<=10) {
+		dateObj.last = year+"-0"+( parseInt(month)-3)+'-'+day
+		return dateObj
+	}else{
+			dateObj.last = year+"-0"+( parseInt(month)-3)+'-'+day
+				return dateObj
+	}
+}
+function getDayAll(starDay,endDay) {
+	var arr=[]
+	var dates = []
+	var db = parseISO8601(starDay)
+	var de = parseISO8601(endDay)
+	var s = db.getTime()-24*60*60*1000
+	var d = de.getTime()
+	for(var i=s;i<d;i++){
+		i= i+24*60*60*1000
+		arr.push(parseInt(i))
+	}
+	for(var j=0;j<arr.length;j++){
+		var time = new Date(arr[j])
+		var year = time.getFullYear(time)
+		var mouth = time.getMonth()+1>=10?time.getMonth()+1:'0'+(time.getMonth()+1)
+		var day = time.getDate()>=10?time.getDate():'0'+time.getDate()
+		var YYMMDD = year+'-'+mouth+"-"+day
+		dates.push(YYMMDD)
+	}
+	dates.shift()
+	return dates
+}
+// 设置报文头
+function setRequestHeader(reqBody){
+	var reqHeader = { 'TRAN_PROCESS': '', 'TRAN_ID': '' };
+	var param = { 'REQ_HEAD': reqHeader, 'REQ_BODY': reqBody };
+	var body = "REQ_MESSAGE="+(JSON.stringify(param));
+	return body
+}
+var result = getThrMonth('1687242373363')
+console.log(result);
+var dateRange = getDayAll(result.last,result.now)
+  var htmlOption = "";
+		for(var k=0; k<dateRange.length; k++){
+		htmlOption += "<option value='" +dateRange[dateRange.length-k-1] + "'>"+dateRange[dateRange.length-k-1]+"</option>";
+	}
+	htmlOption2="<option value=''>请选择日期</option>"+	htmlOption
+	$("#selDate").html(htmlOption2);
+//查询时间
+	//最大查询时间：小时
+	var  endDayDate = 23;
+	var endHour = nowdata.getHours()
+	if (endHour <= 7) {
+		 endDayDate = 8;
+	}
+	if (endHour >= 7 && endHour <= 22) {
+		 endDayDate = endHour + 1;
+	}
+	if (endHour > 22) {
+		 endDayDate = 23;
+	}
+	var ttoption=''
+		for (var  l = 8; l <= endDayDate; l++) {
+							var  tt = "";
+							if (l < 10){
+								tt = "0" + l + ":00";
+							ttoption+="<option value='" +tt + "'>"+tt+"</option>";
+							}
+							else{
+								tt = "" + l + ":00";
+								ttoption+="<option value='" +tt + "'>"+tt+"</option>";
+							}
+	}
+		$("#fromTime").html(ttoption);
+		$("#toTime").html(ttoption);
+$(function(){
+	// $(".timeText").innerText = "更新时间: "+getCurrentTime ()
+			$.ajax({
+			type: 'GET',
+			url: '/SITE/queryExchangeResult.do',
+			// url: 'http://182.207.86.34:4001/cweb-site/jylc/cn/queryExchangeResult.do',
+			// url: '/SITE/instractFileIdDownload.do',
+			timeout:2000,
+			dataType: 'text',
+			success: function(data){
+				//console.log(data);
+					$(".bgcolorTable").html('');
+					var res = jQuery.parseJSON(data)
+						var fileContent = res.RSP_BODY.fileContent
+					$(".bgcolorTable").html(fileContent);
+			},
+			error:function () {
+				$(".bgcolorTable").html('');
+			}
+		})
+})
+
+$(".inputSumbit").click(function(e) {
+e.preventDefault()
+
+var selDate=""
+var fromTime=''
+var toTime=''
+var Date =document.getElementById("selDate").value;
+if(Date!=currentDate){
+selDate = $('#selDate').val()
+fromTime = ""
+toTime =""
+}else{
+selDate = $('#selDate').val()
+fromTime = $('#fromTime').val()
+toTime = $('#toTime').val()
+}
+var parms={
+	selDate:selDate,
+	fromTime:fromTime,
+	toTime:toTime,
+}
+var probody = setRequestHeader(parms)
+	$.ajax({
+			type: 'POST',
+			contentType : "application/x-www-form-urlencoded; charset=utf-8",
+			url: '/SITE/queryExchangeResult.do',
+			// url: 'http://182.207.86.34:4001/SITE/queryExchangeResult.do',
+			data : probody,
+			dataType: 'text',
+			success: function(data){
+			var Date =document.getElementById("selDate").value;
+			if(Date!=currentDate){
+			$("#fromTime").html('');
+			$("#toTime").html('');
+     	$("#fromTime").html(ttoption);
+			$("#toTime").html(ttoption);
+			}
+			$(".bgcolorTable").html('');
+					var res = jQuery.parseJSON(data)
+					var fileContent = res.RSP_BODY.fileContent
+					$(".bgcolorTable").html(fileContent);
+					var parentIframe = $('#ctnIfr', window.parent.document)
+
+				var h = $('.t_thead').length/2
+				var totalH = h*29+(h*2*25)
+				var L = $('.exchangeTab')[0].offsetHeight;
+				// 由于马来西亚林吉特名字过长，导致高度变成43px，所以最终长度要加上（43-25）*15的高度
+				// var totalH = totalH + (43-25)*h;
+				// var iframeHeight = (($('.data').length)*28+totalH+250)/16
+				parentIframe.css("height", L+250);
+			},
+
+			error:function () {
+			var Date =document.getElementById("selDate").value;
+			if(Date!=currentDate){
+			$("#fromTime").html('');
+			$("#toTime").html('');
+     	$("#fromTime").html(ttoption);
+			$("#toTime").html(ttoption);
+			}
+				$(".bgcolorTable").html('');
+			}
+		})
+
+})
+</script>
+</body>
+</html>

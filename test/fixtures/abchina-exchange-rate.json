@@ -1,0 +1,15 @@
+{
+  "ErrorCode": "0",
+  "ErrorMsg": "",
+  "Data": {
+    "Table": [
+      {
+        "CurrName": "美元(USD)",
+        "BuyingPrice": "689.09600000",
+        "CashBuyingPrice": "689.09600000",
+        "SellPrice": "691.85600000",
+        "PublishTime": "2026-03-14T04:03:11+08:00"
+      }
+    ]
+  }
+}
