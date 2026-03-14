@@ -1,7 +1,18 @@
-const axios = require('axios');
 const iconv = require('iconv-lite');
-const https = require('https');
 const crypto = require('crypto');
+
+let legacyTlsDispatcher;
+
+try {
+  const { Agent } = require('undici');
+  legacyTlsDispatcher = new Agent({
+    connect: {
+      secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
+    },
+  });
+} catch {
+  legacyTlsDispatcher = undefined;
+}
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 
@@ -31,33 +42,28 @@ function normalizeCharset(value) {
 }
 
 async function fetchBuffer(url, options = {}) {
-  try {
-    const response = await axios.request({
-      url,
-      method: options.method || 'GET',
-      headers: {
-        ...DEFAULT_HEADERS,
-        ...(options.headers || {}),
-      },
-      data: options.body,
-      responseType: 'arraybuffer',
-      timeout: options.timeoutMs || DEFAULT_TIMEOUT_MS,
-      httpsAgent: new https.Agent({
-        secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
-      }),
-      validateStatus(status) {
-        return status >= 200 && status < 300;
-      },
-    });
+  const response = await fetch(url, {
+    method: options.method || 'GET',
+    headers: {
+      ...DEFAULT_HEADERS,
+      ...(options.headers || {}),
+    },
+    body: options.body,
+    signal: AbortSignal.timeout(options.timeoutMs || DEFAULT_TIMEOUT_MS),
+    ...(legacyTlsDispatcher ? { dispatcher: legacyTlsDispatcher } : {}),
+  });
 
-    const buffer = Buffer.isBuffer(response.data)
-      ? response.data
-      : Buffer.from(response.data);
-    const charset = detectCharset(response.headers['content-type'], buffer);
-    return { buffer, charset };
-  } catch (error) {
+  if (!response.ok) {
+    const error = new Error(`Request failed with status ${response.status} ${response.statusText}`);
+    error.status = response.status;
+    error.statusText = response.statusText;
+    error.url = response.url;
     throw error;
   }
+
+  const buffer = Buffer.from(await response.arrayBuffer());
+  const charset = detectCharset(response.headers.get('content-type'), buffer);
+  return { buffer, charset };
 }
 
 async function fetchText(url, options) {

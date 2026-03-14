@@ -1,6 +1,6 @@
 {
   "name": "chinese-bank-forex-rates",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An OpenClaw skill for fetching forex rates from Chinese banks.",
   "scripts": {
     "start": "node index.js"
