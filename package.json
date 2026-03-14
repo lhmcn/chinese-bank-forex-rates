@@ -25,5 +25,8 @@
     "exchange rates",
     "chinese banks"
   ],
-  "homepage": "https://github.com/lhmcn/chinese-bank-forex-rates"
+  "homepage": "https://github.com/lhmcn/chinese-bank-forex-rates",
+  "engines": {
+    "node": ">=18.3"
+  }
 }
