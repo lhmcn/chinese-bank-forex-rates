@@ -76,8 +76,8 @@ module.exports = {
       return {
         currencyCode: row.currencyCode,
         currencyName: row.currencyName,
-        buyPrice: prices.buyPrice,
-        sellPrice: prices.sellPrice,
+        buyPrice: prices.buyPrice * 100,
+        sellPrice: prices.sellPrice * 100
       };
     });
     return {
