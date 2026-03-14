@@ -4,6 +4,7 @@ module.exports = {
   aliases: ['示例'],
   sourceUrl: 'https://example.com/forex',
   sourceType: 'html',
+  rateMultiplier: 1,
   capabilities: {
     supportsPreferredCashSplit: false,
     updateTimeMode: 'page',

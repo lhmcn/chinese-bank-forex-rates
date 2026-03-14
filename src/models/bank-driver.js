@@ -5,6 +5,10 @@ function assertBankDriver(driver) {
       throw new Error(`Bank driver is missing required field: ${field}`);
     }
   }
+
+  if (driver.rateMultiplier != null && !Number.isFinite(driver.rateMultiplier)) {
+    throw new Error('Bank driver rateMultiplier must be a finite number when provided');
+  }
 }
 
 module.exports = {

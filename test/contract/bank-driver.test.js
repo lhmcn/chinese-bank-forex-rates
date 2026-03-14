@@ -12,5 +12,8 @@ test('every bank driver exposes required metadata and methods', () => {
     assert.equal(typeof driver.parse, 'function');
     assert.equal(typeof driver.mapRates, 'function');
     assert.equal(typeof driver.capabilities, 'object');
+    if (driver.rateMultiplier != null) {
+      assert.equal(typeof driver.rateMultiplier, 'number');
+    }
   }
 });

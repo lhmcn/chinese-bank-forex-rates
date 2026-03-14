@@ -6,6 +6,33 @@ function buildResponse({ bankName, updateTime, rates }) {
   };
 }
 
+function formatRatesForResponse(rates, options = {}) {
+  const multiplier = Number.isFinite(options.rateMultiplier) ? options.rateMultiplier : 1;
+  return (rates || []).map((rate) => ({
+    ...rate,
+    buyPrice: formatPrice(rate.buyPrice, multiplier),
+    sellPrice: formatPrice(rate.sellPrice, multiplier),
+  }));
+}
+
+function formatPrice(value, multiplier) {
+  if (typeof value !== 'string') {
+    return '';
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return '';
+  }
+
+  const numericValue = Number(trimmed);
+  if (!Number.isFinite(numericValue)) {
+    return trimmed;
+  }
+
+  return (numericValue * multiplier).toFixed(2);
+}
+
 function validateResponse(response) {
   if (!response || typeof response !== 'object') {
     throw new Error('Response must be an object');
@@ -34,5 +61,6 @@ function validateResponse(response) {
 
 module.exports = {
   buildResponse,
+  formatRatesForResponse,
   validateResponse,
 };

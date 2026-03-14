@@ -2,7 +2,7 @@ const { parseArgs } = require('node:util');
 
 const { resolveBankDriver, listSupportedBanks } = require('./banks/registry');
 const { filterRatesByRequestedCurrencies } = require('./normalization/currencies');
-const { buildResponse, validateResponse } = require('./models/response');
+const { buildResponse, formatRatesForResponse, validateResponse } = require('./models/response');
 const { createUnsupportedBankError } = require('./lib/errors');
 
 async function runSkill({ bank, currencies = [] }) {
@@ -16,11 +16,12 @@ async function runSkill({ bank, currencies = [] }) {
   const parsed = driver.parse(raw);
   const mapped = driver.mapRates(parsed);
   const filtered = filterRatesByRequestedCurrencies(mapped.rates, currencies);
+  const formattedRates = formatRatesForResponse(filtered, { rateMultiplier: driver.rateMultiplier });
 
   const response = buildResponse({
     bankName: driver.displayName,
     updateTime: mapped.updateTime,
-    rates: filtered,
+    rates: formattedRates,
   });
 
   validateResponse(response);

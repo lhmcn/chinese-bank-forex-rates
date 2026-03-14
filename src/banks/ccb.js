@@ -43,6 +43,7 @@ module.exports = {
   aliases: ['建设银行', '建行'],
   sourceUrl: 'https://www1.ccb.com/cn/home/news/jshckpj_new2.xml',
   sourceType: 'xml',
+  rateMultiplier: 100,
   capabilities: {
     supportsPreferredCashSplit: true,
     updateTimeMode: 'row',
@@ -76,8 +77,8 @@ module.exports = {
       return {
         currencyCode: row.currencyCode,
         currencyName: row.currencyName,
-        buyPrice: prices.buyPrice * 100,
-        sellPrice: prices.sellPrice * 100
+        buyPrice: prices.buyPrice,
+        sellPrice: prices.sellPrice,
       };
     });
     return {
