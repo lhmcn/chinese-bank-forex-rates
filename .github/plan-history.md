@@ -100,9 +100,9 @@ Capabilities:
 - character-set detection from headers and page metadata
 - byte-preserving decoding with `iconv-lite`
 - support for non-GET requests, including JSON POST bodies
-- Windows PowerShell fallback for sites that fail under Node/OpenSSL due to legacy TLS renegotiation behavior
+- axios-based HTTP transport that runs without platform-specific shell fallbacks
 
-This matters because some bank endpoints worked only after falling back away from the default Node HTTPS path.
+This matters because the project is intended to run on Linux, so the fetch layer now avoids Windows-only command execution entirely while preserving the shared decoding and request behavior.
 
 ## Price Normalization Rules
 
@@ -168,6 +168,7 @@ Chronological summary:
 8. Replaced 招行 HTML parsing with the discovered `/api/v1/fx/rate` JSON endpoint.
 9. Replaced 工行 HTML parsing with the discovered `/exchanges/ns/getLatest` API.
 10. Cleaned temporary files and moved investigation artifacts into `debug/`.
+11. Removed Windows-specific shell fallback code and standardized the fetch layer for Linux execution.
 
 ## Current Supported Banks
 
@@ -186,6 +187,7 @@ What is already solid:
 - tests pass for all supported banks
 - live extraction works for the six supported banks
 - bank-specific source decisions are documented
+- the shared fetch path no longer depends on Windows-specific command execution
 
 What future work is likely worthwhile:
 

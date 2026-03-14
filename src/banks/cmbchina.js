@@ -16,7 +16,7 @@ module.exports = {
     updateTimeMode: 'row',
   },
   async fetch() {
-    return fetchText(this.sourceUrl, { allowPowerShellFallback: false });
+    return fetchText(this.sourceUrl);
   },
   parse(payload) {
     const parsed = JSON.parse(payload);

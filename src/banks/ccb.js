@@ -48,7 +48,7 @@ module.exports = {
     updateTimeMode: 'row',
   },
   async fetch() {
-    return fetchText(this.sourceUrl, { preferPowerShell: true });
+    return fetchText(this.sourceUrl);
   },
   parse(xml) {
     const $ = loadXml(xml);

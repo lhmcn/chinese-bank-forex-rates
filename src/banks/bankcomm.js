@@ -16,7 +16,7 @@ module.exports = {
     updateTimeMode: 'page',
   },
   async fetch() {
-    return fetchText(this.sourceUrl, { preferPowerShell: true });
+    return fetchText(this.sourceUrl);
   },
   parse(raw) {
     const payload = typeof raw === 'string' && raw.trim().startsWith('{') ? JSON.parse(raw) : null;

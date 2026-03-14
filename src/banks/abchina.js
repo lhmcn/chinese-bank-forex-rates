@@ -14,7 +14,7 @@ module.exports = {
     updateTimeMode: 'row',
   },
   async fetch() {
-    return fetchJson(this.sourceUrl, { preferPowerShell: true });
+    return fetchJson(this.sourceUrl);
   },
   parse(payload) {
     const rows = (((payload || {}).Data || {}).Table || []).map((row) => ({
