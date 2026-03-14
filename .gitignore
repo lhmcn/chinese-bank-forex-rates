@@ -2,3 +2,4 @@ node_modules/
 *.tmp.html
 *.tmp.json
 debug/dumps/
+release/index.js
