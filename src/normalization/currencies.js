@@ -37,6 +37,7 @@ const CURRENCIES = [
   { code: 'MNT', name: '蒙古图格里克', aliases: ['mnt'] },
   { code: 'PKR', name: '巴基斯坦卢比', aliases: ['pkr'] },
   { code: 'KZT', name: '哈萨克斯坦坚戈', aliases: ['kzt'] },
+  { code: 'IDR', name: '印尼盾', aliases: ['idr'] },
 ];
 
 const currencyByKey = new Map();
