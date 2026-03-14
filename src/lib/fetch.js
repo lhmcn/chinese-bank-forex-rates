@@ -1,5 +1,7 @@
 const axios = require('axios');
 const iconv = require('iconv-lite');
+const https = require('https');
+const crypto = require('crypto');
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 
@@ -40,6 +42,9 @@ async function fetchBuffer(url, options = {}) {
       data: options.body,
       responseType: 'arraybuffer',
       timeout: options.timeoutMs || DEFAULT_TIMEOUT_MS,
+      httpsAgent: new https.Agent({
+        secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
+      }),
       validateStatus(status) {
         return status >= 200 && status < 300;
       },
