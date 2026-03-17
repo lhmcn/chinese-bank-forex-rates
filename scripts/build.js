@@ -1,5 +1,5 @@
 const path = require('node:path');
-const { mkdir, rm, writeFile } = require('node:fs/promises');
+const { rm, writeFile } = require('node:fs/promises');
 
 const ncc = require('@vercel/ncc');
 
@@ -9,8 +9,7 @@ async function build() {
     const releaseDir = path.join(rootDir, 'release');
     const outputFile = path.join(releaseDir, 'index.js');
 
-    await rm(releaseDir, { recursive: true, force: true });
-    await mkdir(releaseDir, { recursive: true });
+    await rm(outputFile, { force: true });
 
     const { code, assets } = await ncc(entryFile, {
         cache: false,
